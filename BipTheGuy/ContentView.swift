@@ -36,10 +36,34 @@ struct ContentView: View {
             Spacer()
             
             PhotosPicker(selection: $selectedPhoto, matching: .images, preferredItemEncoding: .automatic) {
-                Label("Photo Library", systemImage: "photo.fill.on.rectangle.fill")
+                HStack(spacing: 10) {
+                    Image(systemName: "photo.fill.on.rectangle.fill")
+                        .imageScale(.large)
+                        .symbolRenderingMode(.hierarchical)
+                    Text("Photo Library")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                .padding(.vertical, 12)
+                .padding(.horizontal, 16)
+                .background(
+                    // Liquid Glass-inspired look using system material
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                        .shadow(color: Color.black.opacity(0.12), radius: 12, x: 0, y: 6)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(.white.opacity(0.35), lineWidth: 0.5)
+                        .blendMode(.overlay)
+                )
+                .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .hoverEffect(.highlight)
+                .accessibilityLabel(Text("Open Photo Library"))
             }
+            .buttonStyle(.plain)
             .onChange(of: selectedPhoto) {
-                Task{
+                Task {
                     guard let selectedImage = try? await selectedPhoto?.loadTransferable(type: Image.self) else {
                         print("ERROR: Could not get Image from loadTransferable")
                         return
@@ -72,3 +96,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
